@@ -37,17 +37,23 @@
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
             color: white;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-status {
+            text-align: left;
         }
 
         .header h1 {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
@@ -66,7 +72,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* Effet miroir */
         }
 
         .overlay {
@@ -109,35 +114,35 @@
         }
 
         .controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(15px);
+            position: static;
+            padding: 0;
+            background: none;
+            backdrop-filter: none;
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 20px;
-            z-index: 100;
+            gap: 10px;
         }
-
-        .control-btn {
-            width: 120px;
-            height: 120px;
+        
+        .controls .control-btn {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: none;
-            font-size: 2rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
             touch-action: manipulation;
+            transform: scale(1) !important;
+        }
+        
+        .controls .control-btn:hover {
+            transform: scale(1.1) !important;
         }
 
         .control-btn::before {
@@ -159,38 +164,18 @@
         .start-btn {
             background: linear-gradient(135deg, #00ff88, #00d4aa);
             color: white;
-            transform: scale(1.2);
-        }
-
-        .start-btn:hover {
-            transform: scale(1.3);
-            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.4);
         }
 
         .stop-btn {
             background: linear-gradient(135deg, #ff4757, #ff3838);
             color: white;
         }
-
-        .stop-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 40px rgba(255, 71, 87, 0.4);
-        }
         
         .secondary-btn {
             background: linear-gradient(135deg, #898c92, #60646b);
             color: white;
-            width: 80px;
-            height: 80px;
-            font-size: 1.8rem;
-            transform: scale(1);
         }
-
-        .secondary-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(96, 100, 107, 0.4);
-        }
-
+        
         .secondary-btn.active {
             background: linear-gradient(135deg, #00ff88, #00d4aa);
             box-shadow: 0 8px 30px rgba(0, 255, 136, 0.4);
@@ -274,7 +259,7 @@
 
         .distance-indicator {
             position: absolute;
-            top: 120px;
+            top: 80px;
             left: 20px;
             right: 20px;
             height: 10px;
@@ -294,31 +279,20 @@
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
-            
-            .control-btn {
-                width: 100px;
-                height: 100px;
-                font-size: 1.5rem;
+            .controls .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
             }
-            
             .controls {
-                padding: 20px;
-                gap: 15px;
+                gap: 8px;
             }
-
-            .secondary-btn {
-                width: 65px;
-                height: 65px;
-                font-size: 1.5rem;
-            }
-            
             .auto-message {
                 padding: 30px;
                 font-size: 1.2rem;
             }
-            
             .error-message {
                 padding: 25px;
                 font-size: 1rem;
@@ -336,7 +310,6 @@
             z-index: 200;
         }
 
-        /* Styles pour garder l'écran allumé */
         .keep-awake {
             position: fixed;
             top: -1000px;
@@ -350,8 +323,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Assistant Visuel Gemini</h1>
-            <div class="status" id="statusText">Appuyez sur Start pour commencer</div>
+            <div class="title-status">
+                <h1>🔍 Assistant Visuel Gemini</h1>
+                <div class="status" id="statusText">Appuyez sur Start pour commencer</div>
+            </div>
+            <div class="controls">
+                <button class="control-btn start-btn" id="startBtn" style="display: none;">▶️</button>
+                <button class="control-btn stop-btn" id="stopBtn" style="display: none;">⏹️</button>
+                <button class="control-btn secondary-btn" id="feedbackBtn" style="display: none;" title="Changer le mode de retour (Vibration/Son)">📳</button>
+                <button class="control-btn secondary-btn" id="voiceBtn" style="display: none;" title="Activer/Désactiver la voix">🗣️</button>
+            </div>
         </div>
 
         <div class="camera-container">
@@ -395,12 +376,6 @@
             </div>
         </div>
 
-        <div class="controls">
-            <button class="control-btn start-btn" id="startBtn" style="display: none;">▶️</button>
-            <button class="control-btn stop-btn" id="stopBtn" style="display: none;">⏹️</button>
-            <button class="control-btn secondary-btn" id="feedbackBtn" style="display: none;" title="Changer le mode de retour (Vibration/Son)">📳</button>
-            <button class="control-btn secondary-btn" id="voiceBtn" style="display: none;" title="Activer/Désactiver la voix">🗣️</button>
-        </div>
     </div>
 
     <video class="keep-awake" muted loop autoplay>
@@ -417,8 +392,7 @@
                 this.vibrationSupported = 'vibrate' in navigator;
                 this.autoStartTimer = null;
 
-                // New properties for feedback modes
-                this.feedbackMode = 'vibration'; // 'vibration' or 'sound'
+                this.feedbackMode = 'vibration';
                 this.voiceEnabled = false;
                 this.audioCtx = null;
                 this.panner = null;
@@ -444,14 +418,13 @@
                 this.autoMessage = document.getElementById('autoMessage');
                 this.errorMessage = document.getElementById('errorMessage');
                 this.countdown = document.getElementById('countdown');
-
-                // New control elements
                 this.feedbackBtn = document.getElementById('feedbackBtn');
                 this.voiceBtn = document.getElementById('voiceBtn');
             }
 
             startAutoCountdown() {
                 let count = 3;
+                this.autoMessage.style.display = 'block';
                 this.countdown.textContent = count;
                 
                 const countdownInterval = setInterval(() => {
@@ -471,12 +444,17 @@
                 this.startBtn.addEventListener('click', () => this.start());
                 this.stopBtn.addEventListener('click', () => this.stop());
 
-                // New event listeners for mode controls
                 this.feedbackBtn.addEventListener('click', () => {
                     if (this.feedbackMode === 'vibration') {
                         this.feedbackMode = 'sound';
                         this.feedbackBtn.innerHTML = '🔊';
                         this.feedbackBtn.title = 'Mode de retour: Son';
+                        
+                        // CORRECTION : On réveille le contexte audio lors du clic de l'utilisateur
+                        if (this.audioCtx && this.audioCtx.state === 'suspended') {
+                            this.audioCtx.resume();
+                        }
+
                     } else {
                         this.feedbackMode = 'vibration';
                         this.feedbackBtn.innerHTML = '📳';
@@ -501,6 +479,8 @@
                 
                 let tapCount = 0;
                 document.addEventListener('touchstart', (e) => {
+                    if (e.target.closest('.control-btn')) return;
+
                     tapCount++;
                     if (tapCount === 1) {
                         setTimeout(() => {
@@ -520,17 +500,8 @@
                 if (this.vibrationSupported) navigator.vibrate([500, 200, 500]);
                 setTimeout(() => {
                     this.errorMessage.style.display = 'none';
-                    this.retry();
+                    this.startBtn.style.display = 'flex';
                 }, 5000);
-            }
-
-            async retry() {
-                try {
-                    await this.start();
-                } catch (error) {
-                    console.error('Échec du redémarrage:', error);
-                    setTimeout(() => this.retry(), 3000);
-                }
             }
 
             async setupWakeLock() {
@@ -544,8 +515,11 @@
             }
 
             async start() {
+                this.autoMessage.classList.add('hidden');
+                if (this.analysisInterval) clearInterval(this.analysisInterval);
+                
                 try {
-                    this.statusText.textContent = "Démarrage de la caméra...";
+                    this.statusText.textContent = "Démarrage...";
                     
                     const constraints = { video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } };
                     try {
@@ -565,7 +539,6 @@
                     this.canvas.width = this.video.videoWidth;
                     this.canvas.height = this.video.videoHeight;
 
-                    // Initialize AudioContext on user gesture
                     if (!this.audioCtx) {
                         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                         this.panner = this.audioCtx.createStereoPanner();
@@ -575,10 +548,10 @@
 
                     this.isActive = true;
                     this.startBtn.style.display = 'none';
-                    this.stopBtn.style.display = 'none'; // Caché
-                    this.feedbackBtn.style.display = 'flex'; // Show controls
-                    this.voiceBtn.style.display = 'flex';   // Show controls
-                    this.statusText.textContent = "Assistant actif - Surveillance automatique";
+                    this.stopBtn.style.display = 'flex';
+                    this.feedbackBtn.style.display = 'flex';
+                    this.voiceBtn.style.display = 'flex';
+                    this.statusText.textContent = "Assistant actif";
 
                     if (this.vibrationSupported) navigator.vibrate([100, 50, 100]);
 
@@ -607,8 +580,8 @@
 
                 this.startBtn.style.display = 'flex';
                 this.stopBtn.style.display = 'none';
-                this.feedbackBtn.style.display = 'none'; // Hide controls
-                this.voiceBtn.style.display = 'none';   // Hide controls
+                this.feedbackBtn.style.display = 'none';
+                this.voiceBtn.style.display = 'none';
                 this.statusText.textContent = "Assistant arrêté";
                 this.resetVisualFeedback();
 
@@ -646,7 +619,7 @@
                     body: JSON.stringify({
                         contents: [{
                             parts: [
-                                { text: `Analysez cette image prise par la caméra arrière d'un téléphone pour aider une personne malvoyante. Divisez l'image en 9 zones (3x3 grille) et pour chaque zone, indiquez: 1. S'il y a des objets/obstacles (oui/non), 2. Distance approximative (très proche: 0-1m, proche: 1-3m, moyen: 3-10m, loin: 10m+), 3. Type d'objet si identifiable. Répondez UNIQUEMENT au format JSON suivant: {"zones": [{"id": 0, "hasObject": true/false, "distance": "très proche/proche/moyen/loin", "object": "description"}, ...répétez pour les 9 zones (id: 0-8)], "globalDistance": "très proche/proche/moyen/loin", "mainObstacle": "description de l'obstacle principal ou null"}` },
+                                { text: `Analysez cette image prise par la caméra d'un téléphone pour aider une personne malvoyante. Divisez l'image en 9 zones (3x3 grille) et pour chaque zone, indiquez: 1. S'il y a des objets/obstacles (oui/non), 2. Distance approximative (très proche: 0-1m, proche: 1-3m, moyen: 3-10m, loin: 10m+), 3. Type d'objet si identifiable. Répondez UNIQUEMENT au format JSON suivant: {"zones": [{"id": 0, "hasObject": true/false, "distance": "très proche/proche/moyen/loin", "object": "description"}, ...répétez pour les 9 zones (id: 0-8)], "globalDistance": "très proche/proche/moyen/loin", "mainObstacle": "description de l'obstacle principal ou null"}` },
                                 { inline_data: { mime_type: "image/jpeg", data: base64Data } }
                             ]
                         }]
@@ -697,8 +670,8 @@
                 }
 
                 if (analysis.mainObstacle) this.statusText.textContent = `⚠️ ${finalDistance.toUpperCase()}: ${analysis.mainObstacle}`;
-                else if (activeZones.length > 0) this.statusText.textContent = `Objets détectés - Distance: ${finalDistance}`;
-                else this.statusText.textContent = "✅ Voie libre - Surveillance active";
+                else if (activeZones.length > 0) this.statusText.textContent = `Objets détectés: ${finalDistance}`;
+                else this.statusText.textContent = "✅ Voie libre";
             }
 
             applyVibrationFeedback(activeZones, globalDistance) {
@@ -715,18 +688,22 @@
                 if (intensity === 0) return navigator.vibrate(0);
 
                 let pattern;
-                if (activeZones.includes(4)) pattern = [intensity, 100, intensity, 100, intensity]; // Center
-                else if (activeZones.includes(1) || activeZones.includes(7)) pattern = [intensity, 150, intensity]; // Top/Bottom
-                else if (activeZones.some(z => [0, 3, 6].includes(z))) pattern = [intensity * 1.5]; // Left
-                else if (activeZones.some(z => [2, 5, 8].includes(z))) pattern = [intensity * 0.7, 80, intensity * 0.7]; // Right
-                else pattern = [intensity]; // Fallback for corners
+                if (activeZones.includes(4)) pattern = [intensity, 100, intensity, 100, intensity];
+                else if (activeZones.includes(1) || activeZones.includes(7)) pattern = [intensity, 150, intensity];
+                else if (activeZones.some(z => [0, 3, 6].includes(z))) pattern = [intensity * 1.5];
+                else if (activeZones.some(z => [2, 5, 8].includes(z))) pattern = [intensity * 0.7, 80, intensity * 0.7];
+                else pattern = [intensity];
 
                 navigator.vibrate(pattern);
             }
             
             applySoundFeedback(activeZones, globalDistance) {
                 if (!this.audioCtx || activeZones.length === 0) return;
-                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                if (this.audioCtx.state === 'suspended') {
+                    // Si le contexte est toujours suspendu, l'utilisateur n'a pas encore cliqué sur le bouton de mode.
+                    // On ne peut rien faire de plus ici. Le son sera joué au prochain cycle si le contexte est activé.
+                    return;
+                }
 
                 let freq = 150, vol = 0.1, count = 1, interval = 300, duration = 100;
                 switch (globalDistance) {
@@ -737,9 +714,9 @@
                 }
                 
                 const primaryZone = activeZones[0];
-                if ([0, 3, 6].includes(primaryZone)) this.panner.pan.value = -0.9; // Left
-                else if ([2, 5, 8].includes(primaryZone)) this.panner.pan.value = 0.9; // Right
-                else this.panner.pan.value = 0; // Center
+                if ([0, 3, 6].includes(primaryZone)) this.panner.pan.value = -0.9;
+                else if ([2, 5, 8].includes(primaryZone)) this.panner.pan.value = 0.9;
+                else this.panner.pan.value = 0;
 
                 this.gainNode.gain.value = vol;
 
@@ -771,6 +748,8 @@
                 const percentages = { 'très proche': 90, 'proche': 70, 'moyen': 40, 'loin': 20 };
                 this.distanceBar.style.width = (percentages[distance] || 0) + '%';
             }
+
+
 
             showVibrationIndicator() {
                 this.vibrationIndicator.classList.add('active');
